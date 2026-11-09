@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Cadelao.BassHelper.SignalTests</AssemblyName>
+    <RootNamespace>Cadelao.BassHelper.SignalTests</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../Cadelao.BassHelper/Analysis/Radix2Fft.cs" Link="Radix2Fft.cs" />
+    <Compile Include="../Cadelao.BassHelper/Analysis/BassPitchDetector.cs" Link="BassPitchDetector.cs" />
+    <Compile Include="../Cadelao.BassHelper/Models/Notes.cs" Link="Notes.cs" />
+    <Compile Include="../Cadelao.BassHelper/Models/Chords.cs" Link="Chords.cs" />
+    <Compile Include="../Cadelao.BassHelper/Models/FourStringBass.cs" Link="FourStringBass.cs" />
+    <Compile Include="../Cadelao.BassHelper/Analysis/ChordDetector.cs" Link="ChordDetector.cs" />
+    <Compile Include="../Cadelao.BassHelper/Analysis/ChordinoTimeline.cs" Link="ChordinoTimeline.cs" />
+  </ItemGroup>
+</Project>

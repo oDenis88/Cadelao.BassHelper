@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <AssemblyName>Cadelao.BassHelper</AssemblyName>
+    <ApplicationTitle>Cadelao.BassHelper</ApplicationTitle>
+    <Version>3.3.0</Version>
+    <PlatformTarget>x64</PlatformTarget>
+    <RootNamespace>Cadelao.BassHelper</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Update="MainForm.Designer.cs"><DependentUpon>MainForm.cs</DependentUpon></Compile>
+    <PackageReference Include="NAudio" Version="3.3.0" />
+    <None Update="Demo\demo_brega_triad_Dm_Am_E.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Demo\LEIA_ME_TESTE.txt" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Offline native files can be staged from the already-installed 3.1 cache.
+         The published EXE then contains/copies them without downloading on launch. -->
+    <Content Include="Tools\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
+  </ItemGroup>
+</Project>

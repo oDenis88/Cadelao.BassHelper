@@ -1,0 +1,13 @@
+CADELAO.BASSHELPER 2.0.0 - DEMONSTRACAO ORIGINAL
+
+Arquivo: demo_brega_triad_Dm_Am_E.wav
+Afinação do baixo: E1 A1 D2 G2.
+24 segundos, sequencia (cada trecho ~3 segundos):
+Dm | Am | E | Am | Dm | Am | E | Am
+
+O exercicio foi gerado com sintetizadores simples, sem usar samples comerciais.
+Contem arpejos de fundamental, terca e quinta e breves notas de passagem.
+Os instantes de mudanca podem ser aproximados pelo detector.
+
+Abrir pelo botao "DEMO Dm / Am / E". Se o projeto estiver em modo debug,
+o WAV e copiado para a pasta de saida pelo .csproj.
