@@ -69,6 +69,9 @@ partial class MainForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
+        DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
+        DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+        System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
         rootLayout = new TableLayoutPanel();
         headerPanel = new Panel();
         lblTitle = new Label();
@@ -85,16 +88,11 @@ partial class MainForm
         trackSeek = new TrackBar();
         trackVolume = new TrackBar();
         lblVolume = new Label();
-        numSync = new NumericUpDown();
-        lblSync = new Label();
         panelTimeline = new Panel();
-        lblTimeline = new Label();
-        timeline = new PhraseTimelineControl();
         timelineLayout = new TableLayoutPanel();
         timelineHeader = new Panel();
-        lblTimelineZoom = new Label();
-        numTimelineZoom = new NumericUpDown();
-        btnTimelineFollow = new Button();
+        lblTimeline = new Label();
+        timeline = new PhraseTimelineControl();
         scrollTimeline = new HScrollBar();
         centerLayout = new TableLayoutPanel();
         leftCenterLayout = new TableLayoutPanel();
@@ -104,10 +102,9 @@ partial class MainForm
         lblQuality = new Label();
         lblTriad = new Label();
         lblShape = new Label();
-        lblBass = new Label();
         lblNext = new Label();
+        lblBass = new Label();
         lblEvidence = new Label();
-        fretboard = new BassFretboardControl();
         panelGrid = new Panel();
         lblGrid = new Label();
         gridChords = new DataGridView();
@@ -115,47 +112,50 @@ partial class MainForm
         colEnd = new DataGridViewTextBoxColumn();
         colChord = new DataGridViewTextBoxColumn();
         colConfidence = new DataGridViewTextBoxColumn();
+        fretboard = new BassFretboardControl();
         footer = new Panel();
         lblStatus = new Label();
         progressAnalysis = new ProgressBar();
+        numSync = new NumericUpDown();
+        lblSync = new Label();
+        lblTimelineZoom = new Label();
+        numTimelineZoom = new NumericUpDown();
+        btnTimelineFollow = new Button();
         timerPlayhead = new System.Windows.Forms.Timer(components);
-
         rootLayout.SuspendLayout();
         headerPanel.SuspendLayout();
         toolbar.SuspendLayout();
         panelTransport.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)trackSeek).BeginInit();
         ((System.ComponentModel.ISupportInitialize)trackVolume).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)numSync).BeginInit();
         panelTimeline.SuspendLayout();
         timelineLayout.SuspendLayout();
         timelineHeader.SuspendLayout();
-        ((System.ComponentModel.ISupportInitialize)numTimelineZoom).BeginInit();
         centerLayout.SuspendLayout();
         leftCenterLayout.SuspendLayout();
         panelNow.SuspendLayout();
         panelGrid.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)gridChords).BeginInit();
         footer.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)numSync).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)numTimelineZoom).BeginInit();
         SuspendLayout();
-
-        AutoScaleMode = AutoScaleMode.Dpi;
-        BackColor = Color.FromArgb(14, 19, 29);
-        ClientSize = new Size(1480, 900);
-        Font = new Font("Segoe UI", 9F);
-        ForeColor = Color.FromArgb(232, 238, 247);
-        MinimumSize = new Size(1050, 730);
-        Name = "MainForm";
-        StartPosition = FormStartPosition.CenterScreen;
-        WindowState = FormWindowState.Maximized;
-        Text = "BREGA BASS | Brega 70/80 | Baixo 4 Cordas";
-
-        rootLayout.Dock = DockStyle.Fill;
-        rootLayout.Name = "rootLayout";
-        rootLayout.Padding = new Padding(12, 7, 12, 7);
-        rootLayout.Margin = Padding.Empty;
+        // 
+        // rootLayout
+        // 
         rootLayout.ColumnCount = 1;
         rootLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        rootLayout.Controls.Add(headerPanel, 0, 0);
+        rootLayout.Controls.Add(toolbar, 0, 1);
+        rootLayout.Controls.Add(panelTransport, 0, 2);
+        rootLayout.Controls.Add(panelTimeline, 0, 3);
+        rootLayout.Controls.Add(centerLayout, 0, 4);
+        rootLayout.Controls.Add(footer, 0, 5);
+        rootLayout.Dock = DockStyle.Fill;
+        rootLayout.Location = new Point(0, 0);
+        rootLayout.Margin = new Padding(0);
+        rootLayout.Name = "rootLayout";
+        rootLayout.Padding = new Padding(12, 7, 12, 7);
         rootLayout.RowCount = 6;
         rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 58F));
         rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 60F));
@@ -163,351 +163,633 @@ partial class MainForm
         rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 181F));
         rootLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         rootLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
-        Controls.Add(rootLayout);
-
-        headerPanel.Name = "headerPanel";
+        rootLayout.Size = new Size(1480, 900);
+        rootLayout.TabIndex = 0;
+        // 
+        // headerPanel
+        // 
+        headerPanel.Controls.Add(lblTitle);
         headerPanel.Dock = DockStyle.Fill;
-        lblTitle.Name = "lblTitle";
+        headerPanel.Location = new Point(15, 10);
+        headerPanel.Name = "headerPanel";
+        headerPanel.Size = new Size(1450, 52);
+        headerPanel.TabIndex = 0;
+        // 
+        // lblTitle
+        // 
         lblTitle.AutoSize = true;
         lblTitle.Font = new Font("Segoe UI", 22F, FontStyle.Bold);
         lblTitle.ForeColor = Color.FromArgb(110, 226, 206);
         lblTitle.Location = new Point(2, 1);
-        lblTitle.Text = "BREGA BASS";
-        headerPanel.Controls.Add(lblTitle);
-        rootLayout.Controls.Add(headerPanel, 0, 0);
-
-        toolbar.Name = "toolbar";
-        toolbar.Dock = DockStyle.Fill;
-        toolbar.Margin = Padding.Empty;
-        toolbar.Padding = new Padding(0, 2, 0, 2);
-        toolbar.WrapContents = false;
+        lblTitle.Name = "lblTitle";
+        lblTitle.Size = new Size(237, 41);
+        lblTitle.TabIndex = 0;
+        lblTitle.Text = "CADELÃO BASS";
+        // 
+        // toolbar
+        // 
         toolbar.AutoScroll = true;
-        btnOpen.Name = "btnOpen";
-        btnOpen.Text = "ABRIR MP3 / WAV";
-        btnOpen.Size = new Size(176, 44);
+        toolbar.Controls.Add(btnOpen);
+        toolbar.Controls.Add(btnPlay);
+        toolbar.Controls.Add(btnPause);
+        toolbar.Controls.Add(btnStop);
+        toolbar.Controls.Add(btnExport);
+        toolbar.Dock = DockStyle.Fill;
+        toolbar.Location = new Point(12, 65);
+        toolbar.Margin = new Padding(0);
+        toolbar.Name = "toolbar";
+        toolbar.Padding = new Padding(0, 2, 0, 2);
+        toolbar.Size = new Size(1456, 60);
+        toolbar.TabIndex = 1;
+        toolbar.WrapContents = false;
+        // 
+        // btnOpen
+        // 
         btnOpen.BackColor = Color.FromArgb(31, 156, 155);
-        btnOpen.ForeColor = Color.White;
-        btnOpen.FlatStyle = FlatStyle.Flat;
         btnOpen.FlatAppearance.BorderSize = 0;
+        btnOpen.FlatStyle = FlatStyle.Flat;
         btnOpen.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnOpen.ForeColor = Color.White;
+        btnOpen.Location = new Point(1, 4);
         btnOpen.Margin = new Padding(1, 2, 14, 2);
-        btnPlay.Name = "btnPlay";
-        btnPlay.Symbol = TransportSymbol.Play;
-        btnPlay.Text = "TOCAR";
-        btnPlay.Size = new Size(118, 44);
+        btnOpen.Name = "btnOpen";
+        btnOpen.Size = new Size(176, 44);
+        btnOpen.TabIndex = 0;
+        btnOpen.Text = "ABRIR MP3 / WAV";
+        btnOpen.UseVisualStyleBackColor = false;
+        // 
+        // btnPlay
+        // 
         btnPlay.BackColor = Color.FromArgb(26, 120, 93);
+        btnPlay.FlatStyle = FlatStyle.Flat;
+        btnPlay.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnPlay.ForeColor = Color.White;
+        btnPlay.Location = new Point(193, 4);
         btnPlay.Margin = new Padding(2, 2, 5, 2);
-        btnPause.Name = "btnPause";
-        btnPause.Symbol = TransportSymbol.Pause;
-        btnPause.Text = "PAUSAR";
-        btnPause.Size = new Size(126, 44);
+        btnPlay.Name = "btnPlay";
+        btnPlay.Size = new Size(118, 44);
+        btnPlay.TabIndex = 1;
+        btnPlay.Text = "TOCAR";
+        btnPlay.UseVisualStyleBackColor = false;
+        // 
+        // btnPause
+        // 
         btnPause.BackColor = Color.FromArgb(50, 84, 143);
+        btnPause.FlatStyle = FlatStyle.Flat;
+        btnPause.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnPause.ForeColor = Color.White;
+        btnPause.Location = new Point(318, 4);
         btnPause.Margin = new Padding(2, 2, 5, 2);
-        btnStop.Name = "btnStop";
-        btnStop.Symbol = TransportSymbol.Stop;
-        btnStop.Text = "PARAR";
-        btnStop.Size = new Size(117, 44);
+        btnPause.Name = "btnPause";
+        btnPause.Size = new Size(126, 44);
+        btnPause.Symbol = TransportSymbol.Pause;
+        btnPause.TabIndex = 2;
+        btnPause.Text = "PAUSAR";
+        btnPause.UseVisualStyleBackColor = false;
+        // 
+        // btnStop
+        // 
         btnStop.BackColor = Color.FromArgb(133, 66, 77);
+        btnStop.FlatStyle = FlatStyle.Flat;
+        btnStop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnStop.ForeColor = Color.White;
+        btnStop.Location = new Point(451, 4);
         btnStop.Margin = new Padding(2, 2, 23, 2);
-        btnExport.Name = "btnExport";
-        btnExport.Text = "EXPORTAR CIFRAS";
-        btnExport.Size = new Size(177, 44);
+        btnStop.Name = "btnStop";
+        btnStop.Size = new Size(117, 44);
+        btnStop.Symbol = TransportSymbol.Stop;
+        btnStop.TabIndex = 3;
+        btnStop.Text = "PARAR";
+        btnStop.UseVisualStyleBackColor = false;
+        // 
+        // btnExport
+        // 
         btnExport.BackColor = Color.FromArgb(44, 58, 76);
-        btnExport.ForeColor = Color.White;
-        btnExport.FlatStyle = FlatStyle.Flat;
         btnExport.FlatAppearance.BorderSize = 0;
+        btnExport.FlatStyle = FlatStyle.Flat;
         btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnExport.ForeColor = Color.White;
+        btnExport.Location = new Point(593, 4);
         btnExport.Margin = new Padding(2, 2, 5, 2);
-        toolbar.Controls.AddRange(new Control[] {btnOpen, btnPlay, btnPause, btnStop, btnExport});
-        rootLayout.Controls.Add(toolbar, 0, 1);
-
-        panelTransport.Name = "panelTransport";
-        panelTransport.Dock = DockStyle.Fill;
+        btnExport.Name = "btnExport";
+        btnExport.Size = new Size(177, 44);
+        btnExport.TabIndex = 4;
+        btnExport.Text = "EXPORTAR CIFRAS";
+        btnExport.UseVisualStyleBackColor = false;
+        // 
+        // panelTransport
+        // 
         panelTransport.BackColor = Color.FromArgb(22, 30, 44);
+        panelTransport.Controls.Add(lblFile);
+        panelTransport.Controls.Add(lblTime);
+        panelTransport.Controls.Add(lblDuration);
+        panelTransport.Controls.Add(trackSeek);
+        panelTransport.Controls.Add(trackVolume);
+        panelTransport.Controls.Add(lblVolume);
+        panelTransport.Dock = DockStyle.Fill;
+        panelTransport.Location = new Point(12, 125);
         panelTransport.Margin = new Padding(0, 0, 0, 7);
-        lblFile.Name = "lblFile";
-        lblFile.AutoSize = false;
-        lblFile.Size = new Size(780, 21);
-        lblFile.Location = new Point(15, 8);
+        panelTransport.Name = "panelTransport";
+        panelTransport.Size = new Size(1456, 93);
+        panelTransport.TabIndex = 2;
+        // 
+        // lblFile
+        // 
         lblFile.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-        lblFile.Text = "Abra uma musica para comecar";
         lblFile.ForeColor = Color.FromArgb(190, 208, 229);
-        lblTime.Name = "lblTime";
+        lblFile.Location = new Point(15, 8);
+        lblFile.Name = "lblFile";
+        lblFile.Size = new Size(2036, 21);
+        lblFile.TabIndex = 0;
+        lblFile.Text = "Abra uma musica para comecar";
+        // 
+        // lblTime
+        // 
         lblTime.AutoSize = true;
         lblTime.Font = new Font("Consolas", 11F, FontStyle.Bold);
         lblTime.ForeColor = Color.White;
         lblTime.Location = new Point(17, 42);
+        lblTime.Name = "lblTime";
+        lblTime.Size = new Size(48, 18);
+        lblTime.TabIndex = 1;
         lblTime.Text = "00:00";
-        lblDuration.Name = "lblDuration";
+        // 
+        // lblDuration
+        // 
         lblDuration.AutoSize = true;
-        lblDuration.Location = new Point(17, 70);
         lblDuration.ForeColor = Color.FromArgb(147, 170, 195);
+        lblDuration.Location = new Point(17, 70);
+        lblDuration.Name = "lblDuration";
+        lblDuration.Size = new Size(34, 15);
+        lblDuration.TabIndex = 2;
         lblDuration.Text = "00:00";
-        trackSeek.Name = "trackSeek";
+        // 
+        // trackSeek
+        // 
         trackSeek.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-        trackSeek.Location = new Point(99, 43);
-        trackSeek.Size = new Size(725, 45);
-        trackSeek.Minimum = 0;
-        trackSeek.Maximum = 10000;
-        trackSeek.TickStyle = TickStyle.None;
         trackSeek.Enabled = false;
-        lblVolume.Name = "lblVolume";
-        lblVolume.AutoSize = true;
-        lblVolume.Location = new Point(1048, 12);
-        lblVolume.Text = "VOLUME";
-        lblVolume.ForeColor = Color.FromArgb(152, 176, 195);
-        trackVolume.Name = "trackVolume";
+        trackSeek.Location = new Point(99, 43);
+        trackSeek.Maximum = 10000;
+        trackSeek.Name = "trackSeek";
+        trackSeek.Size = new Size(1981, 45);
+        trackSeek.TabIndex = 3;
+        trackSeek.TickStyle = TickStyle.None;
+        // 
+        // trackVolume
+        // 
         trackVolume.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        trackVolume.Location = new Point(1038, 39);
-        trackVolume.Size = new Size(135, 45);
+        trackVolume.Location = new Point(2294, 39);
         trackVolume.Maximum = 100;
-        trackVolume.Value = 80;
+        trackVolume.Name = "trackVolume";
+        trackVolume.Size = new Size(135, 45);
+        trackVolume.TabIndex = 4;
         trackVolume.TickStyle = TickStyle.None;
-        lblSync.Name = "lblSync";
-        lblSync.Visible = false;
-        numSync.Name = "numSync";
-        numSync.Visible = false;
-        numSync.Minimum = -600;
-        numSync.Maximum = 600;
-        numSync.Increment = 10;
-        numSync.Value = 0;
-        panelTransport.Controls.AddRange(new Control[]
-            {lblFile, lblTime, lblDuration, trackSeek, trackVolume, lblVolume});
-        rootLayout.Controls.Add(panelTransport, 0, 2);
-
-        panelTimeline.Name = "panelTimeline";
+        trackVolume.Value = 80;
+        // 
+        // lblVolume
+        // 
+        lblVolume.AutoSize = true;
+        lblVolume.ForeColor = Color.FromArgb(152, 176, 195);
+        lblVolume.Location = new Point(1048, 12);
+        lblVolume.Name = "lblVolume";
+        lblVolume.Size = new Size(54, 15);
+        lblVolume.TabIndex = 5;
+        lblVolume.Text = "VOLUME";
+        // 
+        // panelTimeline
+        // 
+        panelTimeline.Controls.Add(timelineLayout);
         panelTimeline.Dock = DockStyle.Fill;
+        panelTimeline.Location = new Point(12, 225);
         panelTimeline.Margin = new Padding(0, 0, 0, 8);
-        timelineLayout.Name = "timelineLayout";
-        timelineLayout.Dock = DockStyle.Fill;
-        timelineLayout.Padding = Padding.Empty;
-        timelineLayout.Margin = Padding.Empty;
+        panelTimeline.Name = "panelTimeline";
+        panelTimeline.Size = new Size(1456, 173);
+        panelTimeline.TabIndex = 3;
+        // 
+        // timelineLayout
+        // 
         timelineLayout.ColumnCount = 1;
         timelineLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        timelineLayout.Controls.Add(timelineHeader, 0, 0);
+        timelineLayout.Controls.Add(timeline, 0, 1);
+        timelineLayout.Controls.Add(scrollTimeline, 0, 2);
+        timelineLayout.Dock = DockStyle.Fill;
+        timelineLayout.Location = new Point(0, 0);
+        timelineLayout.Margin = new Padding(0);
+        timelineLayout.Name = "timelineLayout";
         timelineLayout.RowCount = 3;
         timelineLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 32F));
         timelineLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
         timelineLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 0F));
-        timelineHeader.Name = "timelineHeader";
+        timelineLayout.Size = new Size(1456, 173);
+        timelineLayout.TabIndex = 0;
+        // 
+        // timelineHeader
+        // 
+        timelineHeader.Controls.Add(lblTimeline);
         timelineHeader.Dock = DockStyle.Fill;
-        timelineHeader.Margin = Padding.Empty;
-        lblTimeline.Name = "lblTimeline";
+        timelineHeader.Location = new Point(0, 0);
+        timelineHeader.Margin = new Padding(0);
+        timelineHeader.Name = "timelineHeader";
+        timelineHeader.Size = new Size(1456, 32);
+        timelineHeader.TabIndex = 0;
+        // 
+        // lblTimeline
+        // 
         lblTimeline.AutoSize = true;
         lblTimeline.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblTimeline.ForeColor = Color.FromArgb(144, 165, 190);
         lblTimeline.Location = new Point(1, 6);
+        lblTimeline.Name = "lblTimeline";
+        lblTimeline.Size = new Size(278, 19);
+        lblTimeline.TabIndex = 0;
         lblTimeline.Text = "CIFRAS POR TEMPO  |  clique para saltar";
-        lblTimelineZoom.Name = "lblTimelineZoom";
-        lblTimelineZoom.Visible = false;
-        lblTimelineZoom.Text = "JANELA (s)";
-        numTimelineZoom.Name = "numTimelineZoom";
-        numTimelineZoom.Visible = false;
-        numTimelineZoom.Minimum = 15;
-        numTimelineZoom.Maximum = 180;
-        numTimelineZoom.Increment = 15;
-        numTimelineZoom.Value = 30;
-        btnTimelineFollow.Name = "btnTimelineFollow";
-        btnTimelineFollow.Visible = false;
-        btnTimelineFollow.Text = "SEGUIR: ON";
-        timelineHeader.Controls.AddRange(new Control[]
-            {lblTimeline});
-        timeline.Name = "timeline";
+        // 
+        // timeline
+        // 
+        timeline.BackColor = Color.FromArgb(17, 27, 41);
         timeline.Dock = DockStyle.Fill;
-        timeline.Margin = Padding.Empty;
-        timeline.ViewSeconds = 30;
-        scrollTimeline.Name = "scrollTimeline";
+        timeline.Font = new Font("Segoe UI", 9F);
+        timeline.ForeColor = Color.FromArgb(180, 204, 218);
+        timeline.Location = new Point(0, 32);
+        timeline.Margin = new Padding(0);
+        timeline.MinimumSize = new Size(120, 70);
+        timeline.Name = "timeline";
+        timeline.Size = new Size(1456, 141);
+        timeline.TabIndex = 1;
+        // 
+        // scrollTimeline
+        // 
         scrollTimeline.Dock = DockStyle.Fill;
-        scrollTimeline.Margin = Padding.Empty;
-        scrollTimeline.Minimum = 0;
-        scrollTimeline.Maximum = 29;
-        scrollTimeline.LargeChange = 30;
-        scrollTimeline.SmallChange = 3;
         scrollTimeline.Enabled = false;
+        scrollTimeline.LargeChange = 30;
+        scrollTimeline.Location = new Point(0, 173);
+        scrollTimeline.Maximum = 29;
+        scrollTimeline.Name = "scrollTimeline";
+        scrollTimeline.Size = new Size(1456, 1);
+        scrollTimeline.SmallChange = 3;
+        scrollTimeline.TabIndex = 2;
         scrollTimeline.Visible = false;
-        timelineLayout.Controls.Add(timelineHeader, 0, 0);
-        timelineLayout.Controls.Add(timeline, 0, 1);
-        timelineLayout.Controls.Add(scrollTimeline, 0, 2);
-        panelTimeline.Controls.Add(timelineLayout);
-        rootLayout.Controls.Add(panelTimeline, 0, 3);
-
-        centerLayout.Name = "centerLayout";
-        centerLayout.Dock = DockStyle.Fill;
-        centerLayout.Margin = Padding.Empty;
+        // 
+        // centerLayout
+        // 
         centerLayout.ColumnCount = 2;
         centerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 69F));
         centerLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 31F));
+        centerLayout.Controls.Add(leftCenterLayout, 0, 0);
+        centerLayout.Controls.Add(fretboard, 1, 0);
+        centerLayout.Dock = DockStyle.Fill;
+        centerLayout.Location = new Point(12, 406);
+        centerLayout.Margin = new Padding(0);
+        centerLayout.Name = "centerLayout";
         centerLayout.RowCount = 1;
         centerLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-        leftCenterLayout.Name = "leftCenterLayout";
-        leftCenterLayout.Dock = DockStyle.Fill;
-        leftCenterLayout.Margin = Padding.Empty;
+        centerLayout.Size = new Size(1456, 455);
+        centerLayout.TabIndex = 4;
+        // 
+        // leftCenterLayout
+        // 
         leftCenterLayout.ColumnCount = 1;
         leftCenterLayout.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+        leftCenterLayout.Controls.Add(panelNow, 0, 0);
+        leftCenterLayout.Controls.Add(panelGrid, 0, 1);
+        leftCenterLayout.Dock = DockStyle.Fill;
+        leftCenterLayout.Location = new Point(0, 0);
+        leftCenterLayout.Margin = new Padding(0);
+        leftCenterLayout.Name = "leftCenterLayout";
         leftCenterLayout.RowCount = 2;
         leftCenterLayout.RowStyles.Add(new RowStyle(SizeType.Absolute, 202F));
         leftCenterLayout.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-
-        panelNow.Name = "panelNow";
-        panelNow.Dock = DockStyle.Fill;
+        leftCenterLayout.Size = new Size(1004, 455);
+        leftCenterLayout.TabIndex = 0;
+        // 
+        // panelNow
+        // 
         panelNow.BackColor = Color.FromArgb(23, 35, 52);
+        panelNow.Controls.Add(lblNowTitle);
+        panelNow.Controls.Add(lblCurrent);
+        panelNow.Controls.Add(lblQuality);
+        panelNow.Controls.Add(lblTriad);
+        panelNow.Controls.Add(lblShape);
+        panelNow.Controls.Add(lblNext);
+        panelNow.Controls.Add(lblBass);
+        panelNow.Controls.Add(lblEvidence);
+        panelNow.Dock = DockStyle.Fill;
+        panelNow.Location = new Point(0, 0);
         panelNow.Margin = new Padding(0, 0, 8, 7);
-        lblNowTitle.Name = "lblNowTitle";
+        panelNow.Name = "panelNow";
+        panelNow.Size = new Size(996, 195);
+        panelNow.TabIndex = 0;
+        // 
+        // lblNowTitle
+        // 
         lblNowTitle.AutoSize = true;
         lblNowTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblNowTitle.ForeColor = Color.FromArgb(139, 164, 191);
         lblNowTitle.Location = new Point(18, 10);
+        lblNowTitle.Name = "lblNowTitle";
+        lblNowTitle.Size = new Size(230, 19);
+        lblNowTitle.TabIndex = 0;
         lblNowTitle.Text = "IDENTIDADE HARMÔNICA ATUAL";
-        lblCurrent.Name = "lblCurrent";
+        // 
+        // lblCurrent
+        // 
         lblCurrent.AutoSize = true;
         lblCurrent.Font = new Font("Segoe UI", 59F, FontStyle.Bold);
         lblCurrent.ForeColor = Color.FromArgb(110, 226, 206);
         lblCurrent.Location = new Point(12, 30);
+        lblCurrent.Name = "lblCurrent";
+        lblCurrent.Size = new Size(109, 105);
+        lblCurrent.TabIndex = 1;
         lblCurrent.Text = "--";
-        lblQuality.Name = "lblQuality";
+        // 
+        // lblQuality
+        // 
         lblQuality.AutoSize = true;
         lblQuality.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
         lblQuality.ForeColor = Color.FromArgb(247, 197, 127);
         lblQuality.Location = new Point(252, 69);
+        lblQuality.Name = "lblQuality";
+        lblQuality.Size = new Size(31, 30);
+        lblQuality.TabIndex = 2;
         lblQuality.Text = "--";
-        lblTriad.Name = "lblTriad";
+        // 
+        // lblTriad
+        // 
         lblTriad.AutoSize = true;
         lblTriad.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
         lblTriad.ForeColor = Color.White;
         lblTriad.Location = new Point(20, 137);
+        lblTriad.Name = "lblTriad";
+        lblTriad.Size = new Size(83, 20);
+        lblTriad.TabIndex = 3;
         lblTriad.Text = "TRÍADE  --";
-        lblShape.Name = "lblShape";
+        // 
+        // lblShape
+        // 
         lblShape.AutoSize = true;
         lblShape.ForeColor = Color.FromArgb(145, 223, 201);
         lblShape.Location = new Point(21, 163);
+        lblShape.Name = "lblShape";
+        lblShape.Size = new Size(59, 15);
+        lblShape.TabIndex = 4;
         lblShape.Text = "CASAS  --";
-        lblNext.Name = "lblNext";
-        lblNext.AutoSize = false;
-        lblNext.TextAlign = ContentAlignment.MiddleRight;
-        lblNext.ForeColor = Color.FromArgb(223, 234, 246);
-        lblNext.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
-        lblNext.Size = new Size(315, 32);
+        // 
+        // lblNext
+        // 
         lblNext.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblNext.Location = new Point(590, 27);
+        lblNext.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+        lblNext.ForeColor = Color.FromArgb(223, 234, 246);
+        lblNext.Location = new Point(1386, 27);
+        lblNext.Name = "lblNext";
+        lblNext.Size = new Size(315, 32);
+        lblNext.TabIndex = 5;
         lblNext.Text = "PRÓXIMA  --";
-        lblBass.Name = "lblBass";
-        lblBass.AutoSize = false;
-        lblBass.TextAlign = ContentAlignment.MiddleRight;
-        lblBass.ForeColor = Color.FromArgb(162, 181, 205);
-        lblBass.Size = new Size(315, 30);
+        lblNext.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // lblBass
+        // 
         lblBass.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblBass.Location = new Point(590, 72);
+        lblBass.ForeColor = Color.FromArgb(162, 181, 205);
+        lblBass.Location = new Point(1386, 72);
+        lblBass.Name = "lblBass";
+        lblBass.Size = new Size(315, 30);
+        lblBass.TabIndex = 6;
         lblBass.Text = "FUNDAMENTAL  --";
-        lblEvidence.Name = "lblEvidence";
-        lblEvidence.AutoSize = false;
-        lblEvidence.TextAlign = ContentAlignment.MiddleRight;
-        lblEvidence.ForeColor = Color.FromArgb(131, 154, 180);
-        lblEvidence.Size = new Size(315, 27);
+        lblBass.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // lblEvidence
+        // 
         lblEvidence.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-        lblEvidence.Location = new Point(590, 116);
+        lblEvidence.ForeColor = Color.FromArgb(131, 154, 180);
+        lblEvidence.Location = new Point(1386, 116);
+        lblEvidence.Name = "lblEvidence";
+        lblEvidence.Size = new Size(315, 27);
+        lblEvidence.TabIndex = 7;
         lblEvidence.Text = "MOTOR  --";
-        panelNow.Controls.AddRange(new Control[]
-            {lblNowTitle, lblCurrent, lblQuality, lblTriad, lblShape, lblNext, lblBass, lblEvidence});
-        leftCenterLayout.Controls.Add(panelNow, 0, 0);
-
-        panelGrid.Name = "panelGrid";
+        lblEvidence.TextAlign = ContentAlignment.MiddleRight;
+        // 
+        // panelGrid
+        // 
+        panelGrid.Controls.Add(lblGrid);
+        panelGrid.Controls.Add(gridChords);
         panelGrid.Dock = DockStyle.Fill;
+        panelGrid.Location = new Point(0, 202);
         panelGrid.Margin = new Padding(0, 0, 8, 0);
-        lblGrid.Name = "lblGrid";
+        panelGrid.Name = "panelGrid";
+        panelGrid.Size = new Size(996, 253);
+        panelGrid.TabIndex = 1;
+        // 
+        // lblGrid
+        // 
         lblGrid.AutoSize = true;
         lblGrid.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
         lblGrid.ForeColor = Color.FromArgb(144, 165, 190);
         lblGrid.Location = new Point(2, 1);
+        lblGrid.Name = "lblGrid";
+        lblGrid.Size = new Size(478, 19);
+        lblGrid.TabIndex = 0;
         lblGrid.Text = "CIFRAS POR FRASE  |  duplo clique: tocar  |  edite TRÍADE para corrigir";
-        gridChords.Name = "gridChords";
-        gridChords.Dock = DockStyle.Bottom;
-        gridChords.Height = 140;
-        gridChords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        // 
+        // gridChords
+        // 
         gridChords.AllowUserToAddRows = false;
         gridChords.AllowUserToDeleteRows = false;
         gridChords.AllowUserToResizeRows = false;
-        gridChords.RowHeadersVisible = false;
-        gridChords.MultiSelect = false;
-        gridChords.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        gridChords.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         gridChords.BackgroundColor = Color.FromArgb(18, 27, 40);
         gridChords.BorderStyle = BorderStyle.None;
-        gridChords.GridColor = Color.FromArgb(45, 57, 73);
-        gridChords.EnableHeadersVisualStyles = false;
-        gridChords.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(31, 47, 65);
-        gridChords.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-        gridChords.DefaultCellStyle.BackColor = Color.FromArgb(19, 28, 42);
-        gridChords.DefaultCellStyle.ForeColor = Color.FromArgb(233, 238, 243);
-        gridChords.DefaultCellStyle.SelectionBackColor = Color.FromArgb(43, 93, 98);
-        gridChords.DefaultCellStyle.SelectionForeColor = Color.White;
-        gridChords.RowTemplate.Height = 28;
+        dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle1.BackColor = Color.FromArgb(31, 47, 65);
+        dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle1.ForeColor = Color.White;
+        dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+        dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+        dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+        gridChords.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
         gridChords.ColumnHeadersHeight = 33;
-        colStart.Name = "colStart";
+        gridChords.Columns.AddRange(new DataGridViewColumn[] { colStart, colEnd, colChord, colConfidence });
+        dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft;
+        dataGridViewCellStyle2.BackColor = Color.FromArgb(19, 28, 42);
+        dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F);
+        dataGridViewCellStyle2.ForeColor = Color.FromArgb(233, 238, 243);
+        dataGridViewCellStyle2.SelectionBackColor = Color.FromArgb(43, 93, 98);
+        dataGridViewCellStyle2.SelectionForeColor = Color.White;
+        dataGridViewCellStyle2.WrapMode = DataGridViewTriState.False;
+        gridChords.DefaultCellStyle = dataGridViewCellStyle2;
+        gridChords.Dock = DockStyle.Bottom;
+        gridChords.EnableHeadersVisualStyles = false;
+        gridChords.GridColor = Color.FromArgb(45, 57, 73);
+        gridChords.Location = new Point(0, 113);
+        gridChords.MultiSelect = false;
+        gridChords.Name = "gridChords";
+        gridChords.RowHeadersVisible = false;
+        gridChords.RowTemplate.Height = 28;
+        gridChords.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+        gridChords.Size = new Size(996, 140);
+        gridChords.TabIndex = 1;
+        // 
+        // colStart
+        // 
+        colStart.FillWeight = 18F;
         colStart.HeaderText = "INÍCIO";
+        colStart.Name = "colStart";
         colStart.ReadOnly = true;
-        colStart.FillWeight = 18;
-        colEnd.Name = "colEnd";
+        // 
+        // colEnd
+        // 
+        colEnd.FillWeight = 18F;
         colEnd.HeaderText = "FIM";
+        colEnd.Name = "colEnd";
         colEnd.ReadOnly = true;
-        colEnd.FillWeight = 18;
-        colChord.Name = "colChord";
+        // 
+        // colChord
+        // 
+        colChord.FillWeight = 30F;
         colChord.HeaderText = "TRÍADE";
-        colChord.FillWeight = 30;
-        colConfidence.Name = "colConfidence";
+        colChord.Name = "colChord";
+        // 
+        // colConfidence
+        // 
+        colConfidence.FillWeight = 23F;
         colConfidence.HeaderText = "CHORDINO BRUTO";
+        colConfidence.Name = "colConfidence";
         colConfidence.ReadOnly = true;
-        colConfidence.FillWeight = 23;
-        gridChords.Columns.AddRange(new DataGridViewColumn[]
-            {colStart, colEnd, colChord, colConfidence});
-        panelGrid.Controls.AddRange(new Control[] {lblGrid, gridChords});
-        leftCenterLayout.Controls.Add(panelGrid, 0, 1);
-        centerLayout.Controls.Add(leftCenterLayout, 0, 0);
-
-        fretboard.Name = "fretboard";
+        // 
+        // fretboard
+        // 
+        fretboard.AccessibleName = "Braco do contrabaixo vertical, cordas E A D G; fundamental e triade sugerida.";
+        fretboard.BackColor = Color.FromArgb(17, 26, 39);
         fretboard.Dock = DockStyle.Fill;
+        fretboard.Font = new Font("Segoe UI", 9F);
+        fretboard.ForeColor = Color.FromArgb(235, 241, 250);
+        fretboard.Location = new Point(1006, 0);
         fretboard.Margin = new Padding(2, 0, 0, 0);
-        fretboard.CurrentChord = "--";
-        centerLayout.Controls.Add(fretboard, 1, 0);
-        rootLayout.Controls.Add(centerLayout, 0, 4);
-
-        footer.Name = "footer";
-        footer.Dock = DockStyle.Fill;
-        lblStatus.Name = "lblStatus";
-        lblStatus.Dock = DockStyle.Fill;
-        lblStatus.TextAlign = ContentAlignment.MiddleLeft;
-        lblStatus.ForeColor = Color.FromArgb(146, 172, 192);
-        lblStatus.Text = "Chordino/Vamp incluídos localmente; pronto para abrir sua música.";
-        progressAnalysis.Name = "progressAnalysis";
-        progressAnalysis.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-        progressAnalysis.Location = new Point(1120, 9);
-        progressAnalysis.Size = new Size(188, 12);
-        progressAnalysis.Maximum = 100;
+        fretboard.MinimumSize = new Size(200, 315);
+        fretboard.Name = "fretboard";
+        fretboard.Size = new Size(450, 455);
+        fretboard.TabIndex = 1;
+        // 
+        // footer
+        // 
         footer.Controls.Add(lblStatus);
         footer.Controls.Add(progressAnalysis);
-        rootLayout.Controls.Add(footer, 0, 5);
-
-        timerPlayhead.Interval = 70;
+        footer.Dock = DockStyle.Fill;
+        footer.Location = new Point(15, 864);
+        footer.Name = "footer";
+        footer.Size = new Size(1450, 26);
+        footer.TabIndex = 5;
+        // 
+        // lblStatus
+        // 
+        lblStatus.Dock = DockStyle.Fill;
+        lblStatus.ForeColor = Color.FromArgb(146, 172, 192);
+        lblStatus.Location = new Point(0, 0);
+        lblStatus.Name = "lblStatus";
+        lblStatus.Size = new Size(1450, 26);
+        lblStatus.TabIndex = 0;
+        lblStatus.Text = "Chordino/Vamp incluídos localmente; pronto para abrir sua música.";
+        lblStatus.TextAlign = ContentAlignment.MiddleLeft;
+        // 
+        // progressAnalysis
+        // 
+        progressAnalysis.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+        progressAnalysis.Location = new Point(2370, 9);
+        progressAnalysis.Name = "progressAnalysis";
+        progressAnalysis.Size = new Size(188, 12);
+        progressAnalysis.TabIndex = 1;
+        // 
+        // numSync
+        // 
+        numSync.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+        numSync.Location = new Point(0, 0);
+        numSync.Maximum = new decimal(new int[] { 600, 0, 0, 0 });
+        numSync.Minimum = new decimal(new int[] { 600, 0, 0, int.MinValue });
+        numSync.Name = "numSync";
+        numSync.Size = new Size(120, 23);
+        numSync.TabIndex = 0;
+        numSync.Visible = false;
+        // 
+        // lblSync
+        // 
+        lblSync.Location = new Point(0, 0);
+        lblSync.Name = "lblSync";
+        lblSync.Size = new Size(100, 23);
+        lblSync.TabIndex = 0;
+        lblSync.Visible = false;
+        // 
+        // lblTimelineZoom
+        // 
+        lblTimelineZoom.Location = new Point(0, 0);
+        lblTimelineZoom.Name = "lblTimelineZoom";
+        lblTimelineZoom.Size = new Size(100, 23);
+        lblTimelineZoom.TabIndex = 0;
+        lblTimelineZoom.Text = "JANELA (s)";
+        lblTimelineZoom.Visible = false;
+        // 
+        // numTimelineZoom
+        // 
+        numTimelineZoom.Increment = new decimal(new int[] { 15, 0, 0, 0 });
+        numTimelineZoom.Location = new Point(0, 0);
+        numTimelineZoom.Maximum = new decimal(new int[] { 180, 0, 0, 0 });
+        numTimelineZoom.Minimum = new decimal(new int[] { 15, 0, 0, 0 });
+        numTimelineZoom.Name = "numTimelineZoom";
+        numTimelineZoom.Size = new Size(120, 23);
+        numTimelineZoom.TabIndex = 0;
+        numTimelineZoom.Value = new decimal(new int[] { 30, 0, 0, 0 });
+        numTimelineZoom.Visible = false;
+        // 
+        // btnTimelineFollow
+        // 
+        btnTimelineFollow.Location = new Point(0, 0);
+        btnTimelineFollow.Name = "btnTimelineFollow";
+        btnTimelineFollow.Size = new Size(75, 23);
+        btnTimelineFollow.TabIndex = 0;
+        btnTimelineFollow.Text = "SEGUIR: ON";
+        btnTimelineFollow.Visible = false;
+        // 
+        // timerPlayhead
+        // 
         timerPlayhead.Enabled = true;
-
-        ((System.ComponentModel.ISupportInitialize)gridChords).EndInit();
-        ((System.ComponentModel.ISupportInitialize)numSync).EndInit();
-        ((System.ComponentModel.ISupportInitialize)trackVolume).EndInit();
-        ((System.ComponentModel.ISupportInitialize)trackSeek).EndInit();
-        footer.ResumeLayout(false);
-        panelGrid.ResumeLayout(false);
-        panelNow.ResumeLayout(false);
-        panelNow.PerformLayout();
-        leftCenterLayout.ResumeLayout(false);
-        centerLayout.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)numTimelineZoom).EndInit();
-        timelineHeader.ResumeLayout(false);
-        timelineHeader.PerformLayout();
-        timelineLayout.ResumeLayout(false);
-        panelTimeline.ResumeLayout(false);
-        panelTransport.ResumeLayout(false);
-        panelTransport.PerformLayout();
-        toolbar.ResumeLayout(false);
+        timerPlayhead.Interval = 70;
+        // 
+        // MainForm
+        // 
+        AutoScaleDimensions = new SizeF(96F, 96F);
+        AutoScaleMode = AutoScaleMode.Dpi;
+        BackColor = Color.FromArgb(14, 19, 29);
+        ClientSize = new Size(1480, 900);
+        Controls.Add(rootLayout);
+        Font = new Font("Segoe UI", 9F);
+        ForeColor = Color.FromArgb(232, 238, 247);
+        Icon = (Icon)resources.GetObject("$this.Icon");
+        MinimumSize = new Size(1050, 730);
+        Name = "MainForm";
+        StartPosition = FormStartPosition.CenterScreen;
+        Text = "Cadelão BASS";
+        WindowState = FormWindowState.Maximized;
+        rootLayout.ResumeLayout(false);
         headerPanel.ResumeLayout(false);
         headerPanel.PerformLayout();
-        rootLayout.ResumeLayout(false);
+        toolbar.ResumeLayout(false);
+        panelTransport.ResumeLayout(false);
+        panelTransport.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)trackSeek).EndInit();
+        ((System.ComponentModel.ISupportInitialize)trackVolume).EndInit();
+        panelTimeline.ResumeLayout(false);
+        timelineLayout.ResumeLayout(false);
+        timelineHeader.ResumeLayout(false);
+        timelineHeader.PerformLayout();
+        centerLayout.ResumeLayout(false);
+        leftCenterLayout.ResumeLayout(false);
+        panelNow.ResumeLayout(false);
+        panelNow.PerformLayout();
+        panelGrid.ResumeLayout(false);
+        panelGrid.PerformLayout();
+        ((System.ComponentModel.ISupportInitialize)gridChords).EndInit();
+        footer.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)numSync).EndInit();
+        ((System.ComponentModel.ISupportInitialize)numTimelineZoom).EndInit();
         ResumeLayout(false);
     }
 }
