@@ -14,7 +14,6 @@ public partial class MainForm : Form
     private bool _draggingSeek;
     private bool _changingSeek;
     private bool _closing;
-    private bool _setupPermission;
 
     public MainForm()
     {
@@ -27,51 +26,36 @@ public partial class MainForm : Form
 
     private void AttachEvents()
     {
-        panelVocabulary.Resize += (_, _) =>
-        {
-            btnApplyChords.Left = panelVocabulary.Width - btnApplyChords.Width - 14;
-            txtKnownChords.Left = btnApplyChords.Left - txtKnownChords.Width - 8;
-        };
         panelNow.Resize += (_, _) =>
         {
-            lblNext.Left = panelNow.Width - lblNext.Width - 21;
-            lblBass.Left = panelNow.Width - lblBass.Width - 21;
-            lblEvidence.Left = panelNow.Width - lblEvidence.Width - 21;
+            // Right-side metadata stays clear of the large current chord.
+            int rightWidth = Math.Clamp(panelNow.Width - 420, 150, 350);
+            foreach (var label in new[] { lblNext, lblBass, lblEvidence })
+            {
+                label.Width = rightWidth;
+                label.Left = panelNow.Width - rightWidth - 18;
+            }
         };
         panelTransport.Resize += (_, _) =>
         {
-            numSync.Left = panelTransport.Width - numSync.Width - 15;
-            lblSync.Left = numSync.Left;
-            trackVolume.Left = numSync.Left - trackVolume.Width - 13;
+            trackVolume.Left = panelTransport.Width - trackVolume.Width - 16;
             lblVolume.Left = trackVolume.Left + 5;
-            trackSeek.Width = Math.Max(140, trackVolume.Left - trackSeek.Left - 12);
-            lblFile.Width = Math.Max(140, panelTransport.Width - 35);
+            trackSeek.Width = Math.Max(140, trackVolume.Left - trackSeek.Left - 16);
+            lblFile.Width = Math.Max(140, trackVolume.Left - lblFile.Left - 18);
         };
         panelGrid.Resize += (_, _) => gridChords.Height = Math.Max(50, panelGrid.Height - 27);
         footer.Resize += (_, _) => progressAnalysis.Left = footer.Width - progressAnalysis.Width - 8;
         btnOpen.Click += (_, _) => OpenFromDialog();
-        btnDemo.Click += (_, _) => OpenDemo();
         btnPlay.Click += (_, _) =>
         {
             timeline.FollowPlayhead = true;
-            UpdateFollowButton();
             _player.Play();
             UpdateActions();
         };
         btnPause.Click += (_, _) => { _player.Pause(); UpdateActions(); };
         btnStop.Click += (_, _) => { _player.Stop(); UpdateActions(); RefreshDisplay(); };
-        btnAnalyze.Click += (_, _) => StartAnalysis();
-        btnTools.Click += async (_, _) => await PrepareChordinoAsync();
         btnExport.Click += (_, _) => ExportChords();
-        btnApplyChords.Click += (_, _) => ApplyVocabulary(true);
-        txtKnownChords.KeyDown += (_, e) =>
-        {
-            if (e.KeyCode != Keys.Enter) return;
-            e.SuppressKeyPress = true;
-            ApplyVocabulary(true);
-        };
         trackVolume.Scroll += (_, _) => _player.Volume = trackVolume.Value / 100f;
-        numSync.ValueChanged += (_, _) => RefreshDisplay();
         trackSeek.MouseDown += (_, _) => _draggingSeek = true;
         trackSeek.MouseUp += (_, _) => { _draggingSeek = false; SeekBySlider(); };
         trackSeek.Scroll += (_, _) =>
@@ -79,28 +63,9 @@ public partial class MainForm : Form
             if (!_changingSeek && !_draggingSeek) SeekBySlider();
         };
         timeline.SeekRequested += (_, args) => Seek(args.Seconds);
-        timeline.ViewStartChanged += (_, _) => SyncTimelineScroll();
-        timelineHeader.Resize += (_, _) =>
-        {
-            btnTimelineFollow.Left = timelineHeader.Width - btnTimelineFollow.Width - 5;
-            numTimelineZoom.Left = btnTimelineFollow.Left - numTimelineZoom.Width - 10;
-            lblTimelineZoom.Left = numTimelineZoom.Left - lblTimelineZoom.Width - 9;
-        };
         numTimelineZoom.ValueChanged += (_, _) =>
         {
             timeline.ViewSeconds = (double)numTimelineZoom.Value;
-            SyncTimelineScroll();
-        };
-        scrollTimeline.Scroll += (_, _) =>
-        {
-            timeline.FollowPlayhead = false;
-            timeline.ViewStart = scrollTimeline.Value;
-            UpdateFollowButton();
-        };
-        btnTimelineFollow.Click += (_, _) =>
-        {
-            timeline.FollowPlayhead = !timeline.FollowPlayhead;
-            UpdateFollowButton();
         };
         gridChords.CellDoubleClick += (_, e) =>
         {
@@ -156,19 +121,6 @@ public partial class MainForm : Form
         if (picker.ShowDialog(this) == DialogResult.OK) LoadSong(picker.FileName);
     }
 
-    private void OpenDemo()
-    {
-        string demo = Path.Combine(AppContext.BaseDirectory, "Demo", "demo_brega_triad_Dm_Am_E.wav");
-        if (!File.Exists(demo))
-        {
-            MessageBox.Show(this, "O demo WAV nao foi encontrado na pasta Demo.", "Demo", MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            return;
-        }
-        txtKnownChords.Text = "Dm, Am, E";
-        LoadSong(demo);
-    }
-
     private void LoadSong(string fileName)
     {
         try
@@ -183,10 +135,10 @@ public partial class MainForm : Form
             timeline.Duration = _player.Duration.TotalSeconds;
             timeline.ViewStart = 0;
             timeline.FollowPlayhead = true;
-            UpdateFollowButton();
-            SyncTimelineScroll();
             progressAnalysis.Value = 0;
             SetStatus("Audio aberto. Analisando as triades em segundo plano...");
+            // Autoplay starts immediately; Chordino analysis remains asynchronous.
+            _player.Play();
             UpdateActions();
             RefreshDisplay();
             StartAnalysis();
@@ -204,9 +156,7 @@ public partial class MainForm : Form
     {
         string? path = _player.FilePath;
         if (path is null) return;
-        // Chordino transcribes unrestricted chords. A user's reference list must
-        // never suppress a real detected change or force an incorrect chord.
-        txtKnownChords.ForeColor = Color.White;
+        // Never filter native Chordino events by a user-selected vocabulary.
         CancelAnalysis();
         int ownGeneration = ++_generation;
         var cts = new CancellationTokenSource();
@@ -230,7 +180,11 @@ public partial class MainForm : Form
         });
         try
         {
-            await EnsureEngineWithConsentAsync(cts.Token);
+            if (!await PortableChordinoRuntime.IsReadyAsync(cts.Token))
+                throw new InvalidOperationException(
+                    "Motor Chordino offline nao disponivel. Confira Tools\\Host\\vamp-simple-host.exe " +
+                    "e Tools\\Plugins\\nnls-chroma.dll na pasta do aplicativo. " +
+                    "O host pode exigir as bibliotecas Microsoft VC++ 2013 (MSVCP120/MSVCR120).");
             if (_closing || IsDisposed || ownGeneration != _generation) return;
             SetStatus("Executando Chordino (NNLS Chroma); sem instalacao externa...");
             AnalysisResult result = await ChordinoEngine.AnalyzeAsync(path, progress, cts.Token);
@@ -256,11 +210,12 @@ public partial class MainForm : Form
         {
             if (_closing || IsDisposed || ownGeneration != _generation) return;
             SetStatus("Motor Chordino: " + ex.Message);
-            MessageBox.Show(this, "Nao foi possivel preparar ou executar Chordino:\n" + ex.Message +
-                "\n\nClique PREPARAR MOTOR para tentar novamente.\n" +
-                "Diagnostico: %LOCALAPPDATA%\\Cadelao.BassHelper\\Native\\win-x64\\bootstrap_status.json",
-                "Chordino automatico",
-                MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this,
+                "O motor Chordino incluido nao conseguiu executar:\n" + ex.Message +
+                "\n\nOs executaveis nativos devem estar ao lado do programa em " +
+                "Tools\\Host e Tools\\Plugins. Em outro Windows, confirme tambem " +
+                "a disponibilidade de MSVCP120.dll/MSVCR120.dll (VC++ 2013).",
+                "Chordino local", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
         finally
         {
@@ -276,86 +231,6 @@ public partial class MainForm : Form
         _analysisCts = null;
         try { cts?.Cancel(); }
         catch (ObjectDisposedException) { }
-    }
-
-    private void ApplyVocabulary(bool notify)
-    {
-        try
-        {
-            var words = string.IsNullOrWhiteSpace(txtKnownChords.Text)
-                ? Array.Empty<ChordDefinition>() : ChordVocabulary.Parse(txtKnownChords.Text).ToArray();
-            txtKnownChords.ForeColor = Color.White;
-            if (notify) SetStatus(words.Length == 0
-                ? "Sem referencias: Chordino reconhece livremente."
-                : "Referencias para estudo: " + string.Join(", ", words.Select(w => w.Name)) +
-                  ". NENHUM acorde encontrado sera escondido ou substituido.");
-            RefreshGrid();
-        }
-        catch (FormatException ex)
-        {
-            txtKnownChords.ForeColor = Color.FromArgb(250, 133, 133);
-            if (notify) SetStatus(ex.Message);
-        }
-    }
-
-    private async Task EnsureEngineWithConsentAsync(CancellationToken token)
-    {
-        if (await PortableChordinoRuntime.IsReadyAsync(token)) return;
-        if (!_setupPermission)
-        {
-            if (_closing || IsDisposed) throw new OperationCanceledException(token);
-            var choice = MessageBox.Show(this,
-                "O BassHelper pode preparar o motor Chordino automaticamente.\n\n" +
-                "Na primeira vez sera necessario acessar a internet para obter:\n" +
-                "- Vamp Simple Host, SDK oficial Windows x64 (licenca BSD)\n" +
-                "- Chordino/NNLS Chroma Windows x64 (GPL v2 ou posterior)\n\n" +
-                "Os arquivos ficam apenas em %LOCALAPPDATA%\\Cadelao.BassHelper, " +
-                "sem instalar nada no Windows.\n\nAutoriza baixar esses componentes?",
-                "Preparar motor Chordino — uma unica vez", MessageBoxButtons.YesNo,
-                MessageBoxIcon.Information);
-            if (choice != DialogResult.Yes) throw new OperationCanceledException(token);
-            _setupPermission = true;
-        }
-        var info = new Progress<EngineSetupProgress>(p =>
-        {
-            if (_closing || IsDisposed || token.IsCancellationRequested) return;
-            SetStatus($"Preparando Chordino: {p.Stage} — {p.Detail}");
-            progressAnalysis.Value = Math.Clamp(p.Percent, 0, 100);
-        });
-        await PortableChordinoRuntime.EnsureAsync(info, token);
-    }
-
-    private async Task PrepareChordinoAsync()
-    {
-        using var cts = new CancellationTokenSource(TimeSpan.FromMinutes(8));
-        btnTools.Enabled = false;
-        try
-        {
-            await EnsureEngineWithConsentAsync(cts.Token);
-            var host = ChordinoEngine.FindHost();
-            if (host is null) throw new InvalidOperationException("Host indisponivel apos preparacao.");
-            var check = await ChordinoEngine.VerifyAsync(host, cts.Token);
-            if (!check.Chordino) throw new InvalidOperationException(check.Detail);
-            MessageBox.Show(this,
-                "Motor Chordino verificado!\n\nHost: " + host +
-                "\nPlugin privado: " + PortableChordinoRuntime.PluginDirectory +
-                "\n\nNenhum instalador externo necessario.",
-                "Cadelao.BassHelper", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            SetStatus("Chordino pronto para reconhecimento de acordes.");
-        }
-        catch (OperationCanceledException)
-        {
-            SetStatus("Preparacao cancelada. Musica e controles de audio preservados.");
-        }
-        catch (Exception ex)
-        {
-            SetStatus("Preparacao nao concluida: " + ex.Message);
-            MessageBox.Show(this,
-                "Nao foi possivel preparar Chordino:\n" + ex.Message +
-                "\n\nDiagnostico: " + PortableChordinoRuntime.LogFile,
-                "Preparacao automatica", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-        finally { if (!_closing && !IsDisposed) btnTools.Enabled = true; }
     }
 
     private static void ColorChordCell(DataGridViewRow row, int chordColumn)
@@ -396,7 +271,6 @@ public partial class MainForm : Form
         if (_closing || IsDisposed) return;
         double duration = _player.Duration.TotalSeconds;
         double position = _player.Position.TotalSeconds;
-        if (_player.IsPlaying) position += (double)numSync.Value / 1000.0;
         position = Math.Clamp(position, 0, duration);
         lblTime.Text = MusicNotes.FormatTime(position);
         lblDuration.Text = MusicNotes.FormatTime(duration);
@@ -408,10 +282,11 @@ public partial class MainForm : Form
         }
         timeline.Duration = duration;
         timeline.CurrentTime = position;
-        SyncTimelineScroll();
         ChordSegment? current = _analysis?.AtChord(position);
         NoteSegment? bass = _analysis?.At(position);
         lblCurrent.Text = current?.EffectiveName ?? "--";
+        // Show ONLY the dominant/root note on four bass strings; no octave guessing.
+        fretboard.CurrentChord = current?.EffectiveName ?? "--";
         lblCurrent.ForeColor = ChordColorPalette.Accent(current?.EffectiveName);
         lblQuality.ForeColor = ChordColorPalette.Accent(current?.EffectiveName);
         if (current is not null && ChordVocabulary.TryParse(current.EffectiveName, out var triad))
@@ -436,13 +311,6 @@ public partial class MainForm : Form
         lblNext.Text = next is null ? "PROXIMA   --" :
             $"PROXIMA   {next.EffectiveName}   {MusicNotes.FormatTime(next.Start)}";
         lblNext.ForeColor = ChordColorPalette.Accent(next?.EffectiveName);
-    }
-
-    private void UpdateFollowButton()
-    {
-        btnTimelineFollow.Text = timeline.FollowPlayhead ? "SEGUIR: ON" : "SEGUIR: OFF";
-        btnTimelineFollow.BackColor = timeline.FollowPlayhead
-            ? Color.FromArgb(30, 112, 112) : Color.FromArgb(44, 58, 76);
     }
 
     private void SyncTimelineScroll()
@@ -471,7 +339,6 @@ public partial class MainForm : Form
         _player.Seek(seconds);
         timeline.FollowPlayhead = true;
         timeline.CenterOn(seconds);
-        UpdateFollowButton();
         RefreshDisplay();
     }
 
@@ -505,7 +372,6 @@ public partial class MainForm : Form
         btnPlay.Enabled = loaded;
         btnPause.Enabled = loaded;
         btnStop.Enabled = loaded;
-        btnAnalyze.Enabled = loaded;
         btnExport.Enabled = _analysis?.IsComplete == true;
         trackSeek.Enabled = loaded;
     }

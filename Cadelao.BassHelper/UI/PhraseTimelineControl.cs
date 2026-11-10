@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Drawing.Drawing2D;
 using Cadelao.BassHelper.Models;
 
@@ -9,12 +10,14 @@ public sealed class PhraseSeekEventArgs(double seconds) : EventArgs
 }
 
 /// <summary>
-/// Beat/chord timeline with a movable fixed-time window. Zoom and panning alter
-/// ONLY the time-to-pixel mapping; no sample, event timestamp or playback speed
-/// is ever modified. The transport's global progress bar stays untouched.
+/// Timeline with a STATIC playhead marker. During follow mode, the content
+/// scrolls under the marker instead of the marker jumping across a page.
+/// Zoom changes only the time-to-pixel mapping; playback speed and timestamps
+/// remain untouched.
 /// </summary>
 public sealed class PhraseTimelineControl : Control
 {
+    private const double FixedPlayheadRatio = 0.20;
     private AnalysisResult? _analysis;
     private double _currentTime;
     private double _duration;
@@ -26,8 +29,12 @@ public sealed class PhraseTimelineControl : Control
     public event EventHandler<PhraseSeekEventArgs>? SeekRequested;
     public event EventHandler? ViewStartChanged;
 
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public AnalysisResult? Analysis { get => _analysis; set { _analysis = value; Invalidate(); } }
 
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public double CurrentTime
     {
         get => _currentTime;
@@ -39,6 +46,8 @@ public sealed class PhraseTimelineControl : Control
         }
     }
 
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public double Duration
     {
         get => _duration;
@@ -50,9 +59,11 @@ public sealed class PhraseTimelineControl : Control
         }
     }
 
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public double AnalyzedTime { get => _analyzedTime; set { _analyzedTime = value; Invalidate(); } }
 
-    /// <summary>Seconds displayed across the whole panel (30 by default).</summary>
+    [DefaultValue(30d)]
     public double ViewSeconds
     {
         get => _viewSeconds;
@@ -63,15 +74,18 @@ public sealed class PhraseTimelineControl : Control
             if (Math.Abs(next - _viewSeconds) < 0.001) return;
             _viewSeconds = next;
             if (_followPlayhead)
-                SetViewStart(_currentTime - Math.Min(_viewSeconds, _duration) * .25);
+                SetViewStart(_currentTime - Math.Min(_viewSeconds, _duration) * FixedPlayheadRatio);
             else
                 SetViewStart(_viewStart);
             Invalidate();
         }
     }
 
-    /// <summary>Beginning of the visible window, in absolute audio seconds.</summary>
+    [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public double ViewStart { get => _viewStart; set => SetViewStart(value); }
+
+    [DefaultValue(true)]
     public bool FollowPlayhead
     {
         get => _followPlayhead;
@@ -96,7 +110,7 @@ public sealed class PhraseTimelineControl : Control
         MinimumSize = new Size(120, 70);
     }
 
-    public void CenterOn(double seconds) => SetViewStart(seconds - VisibleDuration * .28);
+    public void CenterOn(double seconds) => SetViewStart(seconds - VisibleDuration * FixedPlayheadRatio);
 
     private void SetViewStart(double value)
     {
@@ -116,17 +130,21 @@ public sealed class PhraseTimelineControl : Control
             SetViewStart(0);
             return;
         }
-        double span = VisibleDuration;
-        // Move the viewport in measured seconds, not by seeking the audio.
-        // Keep the playhead near 70% of the view during normal playback.
-        if (_currentTime > _viewStart + span * .77)
-            SetViewStart(_currentTime - span * .27);
-        else if (_currentTime < _viewStart + span * .06)
-            SetViewStart(_currentTime - span * .27);
+        SetViewStart(_currentTime - VisibleDuration * FixedPlayheadRatio);
     }
 
     private float PositionX(double seconds, float x0, float x1)
         => x0 + (float)((seconds - _viewStart) / VisibleDuration) * (x1 - x0);
+
+    private float PlayheadX(float x0, float x1)
+    {
+        if (!_followPlayhead) return PositionX(_currentTime, x0, x1);
+        double visible = VisibleDuration;
+        if (_duration <= visible) return PositionX(_currentTime, x0, x1);
+        if (_viewStart <= 0.0001) return PositionX(_currentTime, x0, x1);
+        if (_viewStart >= Math.Max(0, _duration - visible) - 0.0001) return PositionX(_currentTime, x0, x1);
+        return x0 + (x1 - x0) * (float)FixedPlayheadRatio;
+    }
 
     protected override void OnPaint(PaintEventArgs e)
     {
@@ -135,7 +153,7 @@ public sealed class PhraseTimelineControl : Control
         g.Clear(BackColor);
         g.SmoothingMode = SmoothingMode.AntiAlias;
         float x0 = 12, x1 = Math.Max(x0 + 1, Width - 12);
-        float y0 = 13, y1 = Math.Max(y0 + 5, Height - 30);
+        float y0 = 10, y1 = Math.Max(y0 + 5, Height - 28);
         double from = _viewStart;
         double to = Math.Min(Math.Max(0.01, _duration), from + VisibleDuration);
         using var border = new Pen(Color.FromArgb(60, 75, 93));
@@ -152,6 +170,14 @@ public sealed class PhraseTimelineControl : Control
         }
         if (_analysis != null)
         {
+            using var chordFont = new Font(Font.FontFamily, Font.Size + 2.0f, FontStyle.Bold);
+            using var sf = new StringFormat
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center,
+                Trimming = StringTrimming.None,
+                FormatFlags = StringFormatFlags.NoWrap
+            };
             foreach (var s in _analysis.ChordSegments)
             {
                 if (s.End <= from || s.Start >= to) continue;
@@ -160,20 +186,36 @@ public sealed class PhraseTimelineControl : Control
                 float left = Math.Max(x0, PositionX(clippedStart, x0, x1));
                 float right = Math.Min(x1, PositionX(clippedEnd, x0, x1));
                 if (right - left < 1) continue;
-                Color color = ChordColorPalette.Accent(s.EffectiveName);
+
+                string chordText = s.EffectiveName;
+                SizeF textSize = g.MeasureString(chordText, chordFont);
+                float targetWidth = Math.Max(44f, textSize.Width + 16f);
+                float actualWidth = Math.Max(1, right - left - 2);
+                float drawLeft = left + 1;
+                if (actualWidth < targetWidth)
+                {
+                    float center = (left + right) * 0.5f;
+                    drawLeft = center - targetWidth * 0.5f;
+                    drawLeft = Math.Max(x0 + 1, Math.Min(drawLeft, x1 - targetWidth - 1));
+                    actualWidth = Math.Min(targetWidth, x1 - drawLeft - 1);
+                }
+
+                Color color = ChordColorPalette.Accent(chordText);
                 using var fill = new SolidBrush(color);
-                var rect = new RectangleF(left + 1, y0 + 1,
-                    Math.Max(1, right - left - 2), Math.Max(3, y1 - y0 - 2));
+                var rect = new RectangleF(drawLeft, y0 + 1,
+                    actualWidth, Math.Max(3, y1 - y0 - 2));
                 g.FillRectangle(fill, rect);
+                using (var edge = new Pen(Color.FromArgb(150, 14, 18, 28), 2f))
+                    g.DrawRectangle(edge, rect.X, rect.Y, rect.Width, rect.Height);
                 if (s.OverrideChord is not null)
                 {
-                    using var corrected = new Pen(Color.White, 2);
+                    using var corrected = new Pen(Color.White, 2.4f);
                     g.DrawRectangle(corrected, rect.X, rect.Y, rect.Width, rect.Height);
                 }
-                if (rect.Width >= 33)
+                if (rect.Width >= 20)
                 {
                     using var label = new SolidBrush(ChordColorPalette.ContrastText(color));
-                    g.DrawString(s.EffectiveName, Font, label, rect.X + 4, rect.Y + 7);
+                    g.DrawString(chordText, chordFont, label, rect, sf);
                 }
             }
         }
@@ -189,9 +231,11 @@ public sealed class PhraseTimelineControl : Control
         }
         if (_currentTime >= from && _currentTime <= to)
         {
-            float head = PositionX(_currentTime, x0, x1);
-            using var marker = new Pen(Color.White, 2);
-            g.DrawLine(marker, head, y0 - 3, head, y1 + 3);
+            float head = PlayheadX(x0, x1);
+            using var markerGlow = new Pen(Color.FromArgb(130, 255, 255, 255), 6f);
+            using var marker = new Pen(Color.White, 3.4f);
+            g.DrawLine(markerGlow, head, y0 - 4, head, y1 + 4);
+            g.DrawLine(marker, head, y0 - 4, head, y1 + 4);
         }
         using var text = new SolidBrush(Color.FromArgb(152, 169, 193));
         double tick = _viewSeconds <= 20 ? 2 : _viewSeconds <= 45 ? 5 : _viewSeconds <= 90 ? 10 : 20;
@@ -200,7 +244,7 @@ public sealed class PhraseTimelineControl : Control
         {
             float xx = PositionX(t, x0, x1);
             if (xx > x1 - 34) continue;
-            g.DrawString(MusicNotes.FormatTime(t), Font, text, xx, y1 + 6);
+            g.DrawString(MusicNotes.FormatTime(t), Font, text, xx, y1 + 5);
         }
     }
 

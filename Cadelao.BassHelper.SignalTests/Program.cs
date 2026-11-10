@@ -29,6 +29,54 @@ foreach (var triad in ChordVocabulary.Automatic)
         $"Posicoes no baixo 4 cordas: {triad.Name}");
 }
 
+// Brega 70s: the note must be an anchor for a playable root-third-fifth
+// fingering. Open strings must NOT be the highlighted option.
+// Fretted shapes reflect the player's explicit preference.
+foreach (var (name, rootString, rootFret, thirdString, thirdFret, fifthString, fifthFret) in new[]
+{
+    ("Dm", "A", 5, "D", 3, "G", 2),
+    ("D",  "A", 5, "D", 4, "G", 2),
+    ("Am", "E", 5, "A", 3, "D", 2),
+    ("A",  "E", 5, "A", 4, "D", 2),
+    ("E",  "A", 7, "D", 6, "G", 4),
+    ("Em", "A", 7, "D", 5, "G", 4)
+})
+{
+    Check(ChordVocabulary.TryParse(name, out var chord), $"Tríade {name} interpretada");
+    var suggestion = FourStringBass.Suggest(chord!);
+    Check(suggestion.Root.StringName == rootString && suggestion.Root.Fret == rootFret,
+        $"Raiz de {name}: {rootString}{rootFret} (sem corda solta)");
+    Check(suggestion.Third.StringName == thirdString && suggestion.Third.Fret == thirdFret &&
+          suggestion.Fifth.StringName == fifthString && suggestion.Fifth.Fret == fifthFret,
+        $"Shape de {name}: {thirdString}{thirdFret} + {fifthString}{fifthFret}");
+}
+foreach (var chord in ChordVocabulary.Automatic)
+{
+    var shape = FourStringBass.Suggest(chord);
+    Check((shape.Root.StringName is "E" or "A") && shape.Root.Fret is >= 1 and <= 7 &&
+          shape.Third.Fret > 0 && shape.Fifth.Fret > 0 &&
+          shape.Third.Midi - shape.Root.Midi == (chord.IsMinor ? 3 : 4) &&
+          shape.Fifth.Midi - shape.Root.Midi == 7,
+        $"Apoio na região do brega, sem corda solta: {chord.Name}");
+}
+
+// The on-screen neck must display roots only, with no fictitious bass notes.
+foreach (var (root, expected) in new[]
+{
+    ("D", new[] {"E10", "A5", "D0", "D12", "G7"}),
+    ("A", new[] {"E5", "A0", "A12", "D7", "G2"}),
+    ("E", new[] {"E0", "E12", "A7", "D2", "G9"})
+})
+{
+    int pitch = Array.IndexOf(MusicNotes.Names, root);
+    var actual = FourStringBass.RootPositions(pitch)
+        .Select(p => p.StringName + p.Fret)
+        .OrderBy(s => s, StringComparer.Ordinal)
+        .ToArray();
+    Check(actual.SequenceEqual(expected.OrderBy(s => s, StringComparer.Ordinal)),
+        $"Braço E-A-D-G: apenas fundamental {root} nas casas corretas");
+}
+
 static float[] Synth(int[] midi)
 {
     var x = new float[BassPitchDetector.WindowSize];

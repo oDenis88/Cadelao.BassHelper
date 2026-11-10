@@ -12,8 +12,8 @@ namespace Cadelao.BassHelper.Analysis;
 /// <summary>
 /// This invokes the real open-source Chordino Vamp plugin using the Vamp SDK
 /// command-line host. This is NOT a replacement algorithm or a simulated analyzer.
-/// The optional one-time native bootstrap downloads upstream binaries to a
-/// private directory after the user's consent; the host is verified before use.
+/// Host and plugin are distributed in the project's Tools folder. Completely
+/// offline at runtime; a host verification is performed before analysis.
 /// </summary>
 public sealed class ChordinoEngine
 {
@@ -24,67 +24,15 @@ public sealed class ChordinoEngine
     public const string ChordinoId = "nnls-chroma:chordino";
     public const string BeatId = "qm-vamp-plugins:qm-barbeattracker:beats";
 
-    public static string? FindHost()
-    {
-        string? forced = Environment.GetEnvironmentVariable("BASSHELPER_VAMP_HOST");
-        if (File.Exists(forced)) return forced;
-        // Portable native engines are authoritative even when an older 3.0 user
-        // configuration still points at a missing/broken manually selected host.
-        string localHost = Path.Combine(AppContext.BaseDirectory, "Tools", "Host", "vamp-simple-host.exe");
-        if (File.Exists(localHost)) return localHost;
-        if (File.Exists(PortableChordinoRuntime.PreferredHost))
-            return PortableChordinoRuntime.PreferredHost;
-        var names = new[] { "VampSimpleHost.exe", "vamp-simple-host.exe", "vamp-simple-host" };
-        var dirs = new List<string>
-        {
-            PortableChordinoRuntime.HostDirectory,
-            Path.Combine(AppContext.BaseDirectory, "Tools", "Host"),
-            Path.Combine(AppContext.BaseDirectory, "Tools"),
-            AppContext.BaseDirectory,
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Vamp Plugins"),
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Vamp Plugin SDK"),
-        };
-        var setting = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Cadelao.BassHelper", "host_path.txt");
-        if (File.Exists(setting))
-        {
-            string p = File.ReadAllText(setting).Trim();
-            if (File.Exists(p)) return p;
-        }
-        string? path = Environment.GetEnvironmentVariable("PATH");
-        if (!string.IsNullOrEmpty(path)) dirs.AddRange(path.Split(Path.PathSeparator));
-        foreach (string dir in dirs.Distinct(StringComparer.OrdinalIgnoreCase))
-            foreach (string name in names)
-            {
-                if (string.IsNullOrWhiteSpace(dir)) continue;
-                var p = Path.Combine(dir, name);
-                if (File.Exists(p)) return p;
-            }
-        return null;
-    }
-
-    public static void SaveHost(string fullPath)
-    {
-        if (!File.Exists(fullPath)) throw new FileNotFoundException("Host Vamp nao encontrado", fullPath);
-        string dir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "Cadelao.BassHelper");
-        Directory.CreateDirectory(dir);
-        File.WriteAllText(Path.Combine(dir, "host_path.txt"), Path.GetFullPath(fullPath), Encoding.UTF8);
-    }
+    // The executable and plugin ship with this application. No PATH, user cache,
+    // environment override, installer, or download is consulted.
+    public static string? FindHost() =>
+        File.Exists(PortableChordinoRuntime.PreferredHost)
+            ? PortableChordinoRuntime.PreferredHost : null;
 
     private static void SetPluginPath(ProcessStartInfo info)
     {
-        string? setting = Environment.GetEnvironmentVariable("BASSHELPER_VAMP_PATH");
-        var dirs = new List<string>();
-        if (!string.IsNullOrWhiteSpace(setting)) dirs.Add(setting);
-        dirs.Add(Path.Combine(AppContext.BaseDirectory, "Tools", "Plugins"));
-        dirs.Add(PortableChordinoRuntime.PluginDirectory);
-        dirs.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "Vamp Plugins"));
-        dirs.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Vamp Plugins"));
-        if (info.Environment.TryGetValue("VAMP_PATH", out var previous) && !string.IsNullOrWhiteSpace(previous))
-            dirs.Add(previous);
-        var valid = dirs.Where(Directory.Exists).Distinct(StringComparer.OrdinalIgnoreCase);
-        info.Environment["VAMP_PATH"] = string.Join(Path.PathSeparator, valid);
+        info.Environment["VAMP_PATH"] = PortableChordinoRuntime.PluginDirectory;
     }
 
     private static ProcessStartInfo CreateProcess(string host, params string[] args)
@@ -158,12 +106,12 @@ public sealed class ChordinoEngine
         string? host = FindHost();
         if (host is null)
             throw new InvalidOperationException(
-                "Host Vamp x64 nao encontrado. Clique PREPARAR MOTOR (download integrado na primeira vez).");
+                "Host Vamp x64 offline nao encontrado em Tools\\Host\\vamp-simple-host.exe.");
         var available = await VerifyAsync(host, token).ConfigureAwait(false);
         if (!available.Chordino)
             throw new InvalidOperationException(
                 "O host Vamp nao encontrou nnls-chroma:chordino (x64). " +
-                "Clique PREPARAR MOTOR para configurar Chordino x64 no perfil local.\n\nPlugins encontrados:\n" +
+                "Confira Tools\\Plugins\\nnls-chroma.dll.\n\nPlugins encontrados:\n" +
                 available.Detail);
 
         string work = Path.Combine(Path.GetTempPath(), "CadelaoBassHelper_" + Guid.NewGuid().ToString("N"));

@@ -9,7 +9,7 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>Cadelao.BassHelper</AssemblyName>
     <ApplicationTitle>Cadelao.BassHelper</ApplicationTitle>
-    <Version>3.3.0</Version>
+    <Version>3.4.5</Version>
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>Cadelao.BassHelper</RootNamespace>
   </PropertyGroup>
@@ -18,8 +18,7 @@
     <PackageReference Include="NAudio" Version="3.3.0" />
     <None Update="Demo\demo_brega_triad_Dm_Am_E.wav" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Demo\LEIA_ME_TESTE.txt" CopyToOutputDirectory="PreserveNewest" />
-    <!-- Offline native files can be staged from the already-installed 3.1 cache.
-         The published EXE then contains/copies them without downloading on launch. -->
+    <!-- Native binaries are PRESENT in source control/package. Zero runtime downloads. -->
     <Content Include="Tools\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
   </ItemGroup>
 </Project>
