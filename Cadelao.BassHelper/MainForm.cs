@@ -14,6 +14,7 @@ public partial class MainForm : Form
     private bool _draggingSeek;
     private bool _changingSeek;
     private bool _closing;
+    private BarLibraryForm? _barLibrary;
 
     public MainForm()
     {
@@ -46,6 +47,7 @@ public partial class MainForm : Form
         panelGrid.Resize += (_, _) => gridChords.Height = Math.Max(50, panelGrid.Height - 27);
         footer.Resize += (_, _) => progressAnalysis.Left = footer.Width - progressAnalysis.Width - 8;
         btnOpen.Click += (_, _) => OpenFromDialog();
+        btnBarLibrary.Click += (_, _) => OpenBarLibrary();
         btnPlay.Click += (_, _) =>
         {
             timeline.FollowPlayhead = true;
@@ -107,6 +109,28 @@ public partial class MainForm : Form
                 UpdateActions();
             }));
         };
+    }
+
+    private void OpenBarLibrary()
+    {
+        // A second read-only window preserves every part of the homologated
+        // 3.4.5 timeline, triads, chord editor and fretboard layout.
+        if (_barLibrary is null || _barLibrary.IsDisposed)
+        {
+            _barLibrary = new BarLibraryForm();
+            _barLibrary.SongChosen += (_, path) =>
+            {
+                if (_closing || IsDisposed) return;
+                // The original LoadSong path still owns playback and Chordino.
+                _barLibrary?.Hide();
+                LoadSong(path);
+                Activate();
+            };
+            _barLibrary.FormClosed += (_, _) => _barLibrary = null;
+        }
+        _barLibrary.Show(this);
+        _barLibrary.BringToFront();
+        _barLibrary.Activate();
     }
 
     private void OpenFromDialog()

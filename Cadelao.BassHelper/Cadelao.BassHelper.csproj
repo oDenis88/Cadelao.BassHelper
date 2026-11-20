@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
@@ -9,21 +9,24 @@
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <AssemblyName>Cadelao.BassHelper</AssemblyName>
     <ApplicationTitle>Cadelao.BassHelper</ApplicationTitle>
-    <Version>3.4.5</Version>
+    <Version>3.4.7</Version>
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>Cadelao.BassHelper</RootNamespace>
-    <AssemblyTitle>Cadelão Bass</AssemblyTitle>
-    <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AssemblyTitle>Cadelao Bass Helper</AssemblyTitle>
+    <ApplicationIcon>Cadelao_Brega_Bass.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="MainForm.Designer.cs"><DependentUpon>MainForm.cs</DependentUpon></Compile>
+    <Compile Update="UI\BarLibraryForm.cs"><SubType>Form</SubType></Compile>
+    <Compile Update="UI\BarLibraryForm.Designer.cs"><DependentUpon>BarLibraryForm.cs</DependentUpon></Compile>
     <PackageReference Include="NAudio" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.15" />
     <None Update="Demo\demo_brega_triad_Dm_Am_E.wav" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Demo\LEIA_ME_TESTE.txt" CopyToOutputDirectory="PreserveNewest" />
     <!-- Native binaries are PRESENT in source control/package. Zero runtime downloads. -->
     <Content Include="Tools\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="favicon.ico" />
+    <Content Include="Cadelao_Brega_Bass.ico" />
   </ItemGroup>
 </Project>

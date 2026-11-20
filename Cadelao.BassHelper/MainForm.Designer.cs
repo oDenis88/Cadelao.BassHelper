@@ -10,6 +10,7 @@ partial class MainForm
     private Label lblTitle = null!;
     private FlowLayoutPanel toolbar = null!;
     private Button btnOpen = null!;
+    private Button btnBarLibrary = null!;
     private TransportIconButton btnPlay = null!;
     private TransportIconButton btnPause = null!;
     private TransportIconButton btnStop = null!;
@@ -77,6 +78,7 @@ partial class MainForm
         lblTitle = new Label();
         toolbar = new FlowLayoutPanel();
         btnOpen = new Button();
+        btnBarLibrary = new Button();
         btnPlay = new TransportIconButton();
         btnPause = new TransportIconButton();
         btnStop = new TransportIconButton();
@@ -182,14 +184,15 @@ partial class MainForm
         lblTitle.ForeColor = Color.FromArgb(110, 226, 206);
         lblTitle.Location = new Point(2, 1);
         lblTitle.Name = "lblTitle";
-        lblTitle.Size = new Size(237, 41);
+        lblTitle.Size = new Size(197, 41);
         lblTitle.TabIndex = 0;
-        lblTitle.Text = "CADELÃO BASS";
+        lblTitle.Text = "BREGA BASS";
         // 
         // toolbar
         // 
         toolbar.AutoScroll = true;
         toolbar.Controls.Add(btnOpen);
+        toolbar.Controls.Add(btnBarLibrary);
         toolbar.Controls.Add(btnPlay);
         toolbar.Controls.Add(btnPause);
         toolbar.Controls.Add(btnStop);
@@ -218,17 +221,32 @@ partial class MainForm
         btnOpen.Text = "ABRIR MP3 / WAV";
         btnOpen.UseVisualStyleBackColor = false;
         // 
+        // btnBarLibrary
+        // 
+        btnBarLibrary.BackColor = Color.FromArgb(33, 77, 100);
+        btnBarLibrary.FlatAppearance.BorderSize = 0;
+        btnBarLibrary.FlatStyle = FlatStyle.Flat;
+        btnBarLibrary.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+        btnBarLibrary.ForeColor = Color.White;
+        btnBarLibrary.Location = new Point(192, 4);
+        btnBarLibrary.Margin = new Padding(1, 2, 12, 2);
+        btnBarLibrary.Name = "btnBarLibrary";
+        btnBarLibrary.Size = new Size(209, 44);
+        btnBarLibrary.TabIndex = 1;
+        btnBarLibrary.Text = "BIBLIOTECA CADELAO BAR";
+        btnBarLibrary.UseVisualStyleBackColor = false;
+        // 
         // btnPlay
         // 
         btnPlay.BackColor = Color.FromArgb(26, 120, 93);
         btnPlay.FlatStyle = FlatStyle.Flat;
         btnPlay.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnPlay.ForeColor = Color.White;
-        btnPlay.Location = new Point(193, 4);
+        btnPlay.Location = new Point(415, 4);
         btnPlay.Margin = new Padding(2, 2, 5, 2);
         btnPlay.Name = "btnPlay";
         btnPlay.Size = new Size(118, 44);
-        btnPlay.TabIndex = 1;
+        btnPlay.TabIndex = 2;
         btnPlay.Text = "TOCAR";
         btnPlay.UseVisualStyleBackColor = false;
         // 
@@ -238,12 +256,12 @@ partial class MainForm
         btnPause.FlatStyle = FlatStyle.Flat;
         btnPause.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnPause.ForeColor = Color.White;
-        btnPause.Location = new Point(318, 4);
+        btnPause.Location = new Point(540, 4);
         btnPause.Margin = new Padding(2, 2, 5, 2);
         btnPause.Name = "btnPause";
         btnPause.Size = new Size(126, 44);
         btnPause.Symbol = TransportSymbol.Pause;
-        btnPause.TabIndex = 2;
+        btnPause.TabIndex = 3;
         btnPause.Text = "PAUSAR";
         btnPause.UseVisualStyleBackColor = false;
         // 
@@ -253,12 +271,12 @@ partial class MainForm
         btnStop.FlatStyle = FlatStyle.Flat;
         btnStop.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnStop.ForeColor = Color.White;
-        btnStop.Location = new Point(451, 4);
+        btnStop.Location = new Point(673, 4);
         btnStop.Margin = new Padding(2, 2, 23, 2);
         btnStop.Name = "btnStop";
         btnStop.Size = new Size(117, 44);
         btnStop.Symbol = TransportSymbol.Stop;
-        btnStop.TabIndex = 3;
+        btnStop.TabIndex = 4;
         btnStop.Text = "PARAR";
         btnStop.UseVisualStyleBackColor = false;
         // 
@@ -269,11 +287,11 @@ partial class MainForm
         btnExport.FlatStyle = FlatStyle.Flat;
         btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
         btnExport.ForeColor = Color.White;
-        btnExport.Location = new Point(593, 4);
+        btnExport.Location = new Point(815, 4);
         btnExport.Margin = new Padding(2, 2, 5, 2);
         btnExport.Name = "btnExport";
         btnExport.Size = new Size(177, 44);
-        btnExport.TabIndex = 4;
+        btnExport.TabIndex = 5;
         btnExport.Text = "EXPORTAR CIFRAS";
         btnExport.UseVisualStyleBackColor = false;
         // 
@@ -766,7 +784,7 @@ partial class MainForm
         MinimumSize = new Size(1050, 730);
         Name = "MainForm";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "Cadelão BASS";
+        Text = "BREGA BASS | Brega 70/80 | Baixo 4 Cordas";
         WindowState = FormWindowState.Maximized;
         rootLayout.ResumeLayout(false);
         headerPanel.ResumeLayout(false);
