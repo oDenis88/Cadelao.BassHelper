@@ -27,7 +27,7 @@ public sealed class TriadFingering
 /// <summary>
 /// Bass of four strings in standard E1-A1-D2-G2 tuning.
 ///
-/// Brega fingering: choose a FRETTED root, preferentially on the E/A strings
+/// Bass fingering: choose a FRETTED root, preferentially on the E/A strings
 /// and between frets 1 and 7, as an anchor for root-third-fifth arpeggios.
 /// This means D/Dm => A5, A/Am => E5, E/Em => A7 (never E open).
 /// Then find the third and fifth ABOVE that exact root with a compact,
@@ -47,7 +47,7 @@ public static class FourStringBass
         Available((pitchClass % 12 + 12) % 12).ToArray();
 
     /// <summary>
-    /// Deterministic brega anchor for any major/minor chord on a 4-string bass.
+    /// Deterministic Bass anchor for any major/minor chord on a 4-string bass.
     /// Prefer a fretted root near the "working area" of the style: strings E/A,
     /// roughly between frets 3 and 9, and avoiding roots that are too low to make
     /// a comfortable triad shape. Example targets: D => A5, A => E5, E => A7.
@@ -65,7 +65,7 @@ public static class FourStringBass
 
     private static double RootPriority(BassPosition p)
     {
-        // Strongly prefer the practical brega hand area around the middle of the
+        // Strongly prefer the practical Bass hand area around the middle of the
         // neck, with the A string slightly favored for triad construction. Very
         // low positions (E1/E2, etc.) are heavily penalized because they make the
         // full triad less useful in this repertoire.
@@ -79,7 +79,7 @@ public static class FourStringBass
         if (p.Fret <= 2) score += 4.5;
         else if (p.Fret == 3) score += 1.1;
 
-        // The typical brega region lives mostly in frets 4..8.
+        // The typical Bass region lives mostly in frets 4..8.
         if (p.Fret < 4) score += (4 - p.Fret) * 0.8;
         if (p.Fret > 9) score += (p.Fret - 9) * 0.9;
 

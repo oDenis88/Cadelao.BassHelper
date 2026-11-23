@@ -75,7 +75,7 @@ partial class BarLibraryForm
         MinimumSize = new Size(830, 490);
         StartPosition = FormStartPosition.CenterParent;
         Name = "BarLibraryForm";
-        Text = "BREGA BASS | Biblioteca CadelaoBar8800 (somente leitura)";
+        Text = "Cadelao Bass | Biblioteca CadelaoBar8800 (somente leitura)";
 
         layout.Dock = DockStyle.Fill;
         layout.ColumnCount = 1;
@@ -97,7 +97,7 @@ partial class BarLibraryForm
         lblTitle.AutoSize = true;
         lblTitle.Location = new Point(15, 8);
         lblHint.Name = "lblHint";
-        lblHint.Text = "Duplo clique na faixa: tocar e analisar no BREGA BASS. As estrelas nao podem ser alteradas aqui.";
+        lblHint.Text = "Duplo clique na faixa: tocar e analisar no Cadelao Bass. As estrelas nao podem ser alteradas aqui.";
         lblHint.AutoSize = true;
         lblHint.ForeColor = Color.FromArgb(151, 177, 198);
         lblHint.Location = new Point(17, 46);

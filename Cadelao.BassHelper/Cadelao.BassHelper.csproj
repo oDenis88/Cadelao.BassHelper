@@ -13,7 +13,7 @@
     <PlatformTarget>x64</PlatformTarget>
     <RootNamespace>Cadelao.BassHelper</RootNamespace>
     <AssemblyTitle>Cadelao Bass Helper</AssemblyTitle>
-    <ApplicationIcon>Cadelao_Brega_Bass.ico</ApplicationIcon>
+    <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="MainForm.Designer.cs"><DependentUpon>MainForm.cs</DependentUpon></Compile>
@@ -21,12 +21,12 @@
     <Compile Update="UI\BarLibraryForm.Designer.cs"><DependentUpon>BarLibraryForm.cs</DependentUpon></Compile>
     <PackageReference Include="NAudio" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="10.0.15" />
-    <None Update="Demo\demo_brega_triad_Dm_Am_E.wav" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="Demo\demo_Bass_triad_Dm_Am_E.wav" CopyToOutputDirectory="PreserveNewest" />
     <None Update="Demo\LEIA_ME_TESTE.txt" CopyToOutputDirectory="PreserveNewest" />
     <!-- Native binaries are PRESENT in source control/package. Zero runtime downloads. -->
     <Content Include="Tools\**\*" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Cadelao_Brega_Bass.ico" />
+    <Content Include="favicon.ico" />
   </ItemGroup>
 </Project>

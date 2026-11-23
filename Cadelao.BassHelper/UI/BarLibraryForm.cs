@@ -117,7 +117,7 @@ internal partial class BarLibraryForm : Form
             MessageBox.Show(this,
                 "A biblioteca do CadelaoBar8800 nao pode ser consultada.\n\n" +
                 ex.Message + "\n\nArquivo esperado:\n" + _catalog.CatalogPath +
-                "\n\nO BREGA BASS nao criara nem alterara essa base.",
+                "\n\nO Cadelao Bass nao criara nem alterara essa base.",
                 "Biblioteca somente leitura", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
         finally

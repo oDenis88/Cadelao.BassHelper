@@ -29,7 +29,7 @@ foreach (var triad in ChordVocabulary.Automatic)
         $"Posicoes no baixo 4 cordas: {triad.Name}");
 }
 
-// Brega 70s: the note must be an anchor for a playable root-third-fifth
+// Bass 70s: the note must be an anchor for a playable root-third-fifth
 // fingering. Open strings must NOT be the highlighted option.
 // Fretted shapes reflect the player's explicit preference.
 foreach (var (name, rootString, rootFret, thirdString, thirdFret, fifthString, fifthFret) in new[]
@@ -57,7 +57,7 @@ foreach (var chord in ChordVocabulary.Automatic)
           shape.Third.Fret > 0 && shape.Fifth.Fret > 0 &&
           shape.Third.Midi - shape.Root.Midi == (chord.IsMinor ? 3 : 4) &&
           shape.Fifth.Midi - shape.Root.Midi == 7,
-        $"Apoio na região do brega, sem corda solta: {chord.Name}");
+        $"Apoio na região do Bass, sem corda solta: {chord.Name}");
 }
 
 // The on-screen neck must display roots only, with no fictitious bass notes.

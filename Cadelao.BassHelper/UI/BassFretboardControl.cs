@@ -179,7 +179,7 @@ public sealed class BassFretboardControl : Control
             foreach (BassPosition position in FourStringBass.RootPositions(_definition.Root))
             {
                 // Open strings are available on the instrument, but NOT a
-                // suggested brega triad anchor; do not display them as circles.
+                // suggested Bass triad anchor; do not display them as circles.
                 if (position.Fret == 0) continue;
                 int s = Array.FindIndex(Strings, item => item.Name == position.StringName);
                 if (s < 0) continue;

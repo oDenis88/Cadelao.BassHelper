@@ -13,7 +13,7 @@ public static class ChordColorPalette
 {
     // Indexed by chromatic pitch class: C, C#, D, D#, E, F, F#, G, G#, A, A#, B.
     // Deliberately non-sequential hues so adjacent musical notes and common
-    // brega triads are visually distinct. Am hot pink, Dm blue, E gold.
+    // Bass triads are visually distinct. Am hot pink, Dm blue, E gold.
     private static readonly Color[] RootColors =
     [
         Color.FromArgb(247, 100, 106), // C: coral

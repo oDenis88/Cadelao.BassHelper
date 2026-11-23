@@ -186,7 +186,7 @@ partial class MainForm
         lblTitle.Name = "lblTitle";
         lblTitle.Size = new Size(197, 41);
         lblTitle.TabIndex = 0;
-        lblTitle.Text = "BREGA BASS";
+        lblTitle.Text = "Cadelao Bass";
         // 
         // toolbar
         // 
@@ -784,7 +784,7 @@ partial class MainForm
         MinimumSize = new Size(1050, 730);
         Name = "MainForm";
         StartPosition = FormStartPosition.CenterScreen;
-        Text = "BREGA BASS | Brega 70/80 | Baixo 4 Cordas";
+        Text = "Cadelao Bass | Bass Analyzer | Baixo 4 Cordas";
         WindowState = FormWindowState.Maximized;
         rootLayout.ResumeLayout(false);
         headerPanel.ResumeLayout(false);

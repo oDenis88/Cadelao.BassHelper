@@ -137,7 +137,7 @@ public partial class MainForm : Form
     {
         using var picker = new OpenFileDialog
         {
-            Title = "Selecione uma gravacao de brega para estudar no baixo",
+            Title = "Selecione uma gravacao de Bass para estudar no baixo",
             Filter = "Audio MP3/WAV (*.mp3;*.wav)|*.mp3;*.wav|MP3 (*.mp3)|*.mp3|WAV (*.wav)|*.wav",
             CheckFileExists = true,
             Multiselect = false
